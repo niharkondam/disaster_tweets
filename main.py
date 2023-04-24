@@ -104,7 +104,7 @@ def lem(text):
 vectorizer = pickle.load(open('vectorizer_model.pkl', 'rb'))
 lr_model = pickle.load(open('lr_model.pkl', 'rb'))
 
-st.image('/Users/niharkondam/Downloads/nlp1-cover.jpg')
+st.image('nlp1-cover.jpg')
 st.header('Disaster Tweet Detection')
 text = st.text_input('Type your tweet here:', "I cant belive my backyard is on fire🔥😱. https://howtomakeitrain.com #StayinAlive")
 
