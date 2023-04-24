@@ -101,8 +101,8 @@ def lem(text):
     return text
 
 
-vectorizer = pickle.load(open('/Users/niharkondam/Projects/disaster_tweets/vectorizer_model.pkl', 'rb'))
-lr_model = pickle.load(open('/Users/niharkondam/Projects/disaster_tweets/lr_model.pkl', 'rb'))
+vectorizer = pickle.load(open('vectorizer_model.pkl', 'rb'))
+lr_model = pickle.load(open('lr_model.pkl', 'rb'))
 
 st.header('Disaster Tweet Detection')
 text = st.text_input('Type your tweet here:', "yall 🔥🔥🔥 for sunburn this year?")
