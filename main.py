@@ -1,7 +1,7 @@
 import streamlit as st
 import nltk
 
-nltk.download('all')
+#nltk.download('all')
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 import contractions
@@ -20,7 +20,7 @@ def rem_links(text):
         else:
             ws.append(w)
     text = " ".join(ws)
-    return text
+    return text.strip()
 
 
 def expand_contractions(text):
@@ -28,7 +28,7 @@ def expand_contractions(text):
     for word in text.split():
         expanded_words.append(contractions.fix(word))
     text = ' '.join(expanded_words)
-    return text
+    return text.strip()
 
 
 def emoji_text(text):
@@ -36,8 +36,8 @@ def emoji_text(text):
 
     for k in emdict.keys():
         text = text.replace(k, ' '+emdict[k].split(':')[0]+' ')
-    text = text.replace('  ',' ')
-    return text
+    text = text.replace('  ', ' ')
+    return text.strip()
 
 
 def rem_sc(text):
@@ -50,7 +50,7 @@ def rem_sc(text):
         else:
             txt += ' '
     txt = txt.replace('  ', ' ')
-    return txt
+    return txt.strip()
 
 
 def break_compounds(text):
@@ -71,7 +71,7 @@ def break_compounds(text):
                 wn += c
         ws.append(wn)
     text = ' '.join(ws)
-    return text
+    return text.strip()
 
 
 spell = SpellChecker()
@@ -90,7 +90,7 @@ def correct_spellings(text):
         else:
             corrected_text.append(word)
     #    print(corrected_text)
-    return " ".join(corrected_text)
+    return " ".join(corrected_text).strip()
 
 
 def lem(text):
@@ -98,41 +98,52 @@ def lem(text):
     words = nltk.word_tokenize(text)
     words = [lemmatizer.lemmatize(word) for word in words if word not in set(stopwords.words('english'))]
     text = ' '.join(words)
-    return text
+    return text.strip()
 
 
 vectorizer = pickle.load(open('vectorizer_model.pkl', 'rb'))
 lr_model = pickle.load(open('lr_model.pkl', 'rb'))
 
+st.image('/Users/niharkondam/Downloads/nlp1-cover.jpg')
 st.header('Disaster Tweet Detection')
-text = st.text_input('Type your tweet here:', "yall 🔥🔥🔥 for sunburn this year?")
+text = st.text_input('Type your tweet here:', "I cant belive my backyard is on fire🔥😱. https://howtomakeitrain.com #StayinAlive")
 
 
-text = rem_links(text)
-st.write(f'removed links:\n {text}')
+text1 = rem_links(text)
+text2 = expand_contractions(text1)
+text3 = emoji_text(text2)
+text4 = rem_sc(text3)
+text5 = break_compounds(text4)
+text6 = text5.lower()
+text7 = correct_spellings(text6)
+text8 = lem(text7)
 
-text = expand_contractions(text)
-st.write(f'expanded contractions:\n {text}')
-
-text = emoji_text(text)
-st.write(f'replaced emojis with text:\n {text}')
-
-text = rem_sc(text)
-st.write(f'removed special characters:\n {text}')
-
-text = break_compounds(text)
-st.write(f'broke down coumpounds:\n {text}')
-
-text = text.lower()
-st.write(f'lower cased:\n {text}')
-
-text = correct_spellings(text)
-st.write(f'corrected spellings:\n {text}')
-
-text = lem(text)
-st.write(f'lemmatized and removed stopwords:\n {text}')
-
-if lr_model.predict(vectorizer.transform([text]))[0] == 1:
-    st.write('This tweet is about a disaster')
+if lr_model.predict(vectorizer.transform([text8]))[0] == 1:
+    st.write(':red[DISASTER]')
 else:
-    st.write('This tweet is not about a disaster')
+    st.write(':green[Not a Disaster]')
+
+if text1 != text:
+    st.markdown("**Remove the urls**")
+    st.text(text1)
+if text2 != text1:
+    st.markdown("**Expand the contractions**")
+    st.text(text2)
+if text3 != text2:
+    st.markdown("**Substitute the emojis**")
+    st.text(text3)
+if text4 != text3:
+    st.markdown("**Remove the Special Characters**")
+    st.text(text4)
+if text5 != text4:
+    st.markdown("**Breakdown Compound Words**")
+    st.text(text5)
+if text6 != text5:
+    st.markdown("**Convert to lower cases**")
+    st.text(text6)
+if text7 != text6:
+    st.markdown("**Correct the spellings**")
+    st.text(text7)
+if text8 != text7:
+    st.markdown("**Remove the stopwords and lemmatize**")
+    st.text(text8)
