@@ -102,7 +102,7 @@ def lem(text):
 
 
 vectorizer = pickle.load(open('vectorizer_model.pkl', 'rb'))
-lr_model = pickle.load(open('lr_model.pkl', 'rb'))
+lr_model = pickle.load(open('lr_model1.pkl', 'rb'))
 
 st.image('nlp1-cover.jpg')
 st.header('Disaster Tweet Detection')
